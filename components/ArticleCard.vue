@@ -1,21 +1,19 @@
 <template>
-  <div class="article-card">
-    <h2>{{ article.title }}</h2>
-    <p>{{ article.content.slice(0, 100) }}...</p>
-    <NuxtLink :to="`/article/${article.id}`">阅读更多</NuxtLink>
-  </div>
+  <article class="card">
+    <h2><NuxtLink :to="`/articles/${article.slug}`">{{ article.title }}</NuxtLink></h2>
+    <p class="summary">{{ article.summary }}</p>
+    <div class="meta">发布于 {{ new Date(article.created_at).toLocaleString() }} · 浏览 {{ article.views }}</div>
+  </article>
 </template>
 
-<script setup lang="ts">
-defineProps<{
-  article: { id: number; title: string; content: string }
-}>()
+<script setup>
+const props = defineProps({
+  article: { type: Object, required: true }
+});
 </script>
 
 <style scoped>
-.article-card {
-  border: 1px solid #ccc;
-  padding: 16px;
-  border-radius: 4px;
-}
+.card { padding: 12px; border-bottom: 1px solid #eee; }
+.summary { color: #666; }
+.meta { color: #999; font-size: 12px; }
 </style>

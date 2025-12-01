@@ -1,29 +1,31 @@
+
+
 <template>
-  <div class="container">
+  <div>
     <Navbar />
-    <h1>{{ article.title }}</h1>
-    <p>{{ article.content }}</p>
+    <main class="container">
+      <div v-if="pending">加载中…</div>
+
+      <div v-else-if="error">
+        <p>服务端预取失败 — 显示占位并在客户端尝试加载完整内容。</p>
+        <ClientOnlyArticle :slug="slug" />
+      </div>
+
+      <article v-else>
+        <h1>{{ article.title }}</h1>
+        <div v-html="article.content"></div>
+      </article>
+    </main>
+    <Footer />
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
-import Navbar from '../../components/Navbar.vue'
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
-const id = route.params.id
-
-const { data: article } = await useAsyncData(`article-${id}`, async () => {
-  const res = await $fetch(`/api/articles/${id}`)
-  return res
-})
+<script setup>
+import Navbar from '~/components/Navbar.vue';
+import Footer from '~/components/Footer.vue';
+import ClientOnlyArticle from '~/components/ClientOnlyArticle.vue';
 </script>
 
 <style scoped>
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
+.container { max-width: 900px; margin: 0 auto; padding: 20px; }
 </style>
