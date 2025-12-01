@@ -1,6 +1,6 @@
 <template>
   <article class="card">
-    <h2><NuxtLink :to="`/articles/${article.slug}`">{{ article.title }}</NuxtLink></h2>
+    <h2><NuxtLink :to="`/articles/${article.id}`">{{ article.title }}</NuxtLink></h2>
     <p class="summary">{{ article.summary }}</p>
     <div class="meta">发布于 {{ new Date(article.created_at).toLocaleString() }} · 浏览 {{ article.views }}</div>
   </article>
@@ -10,6 +10,7 @@
 const props = defineProps({
   article: { type: Object, required: true }
 });
+console.log('ArticleCard received article:', props.article);
 </script>
 
 <style scoped>
