@@ -4,6 +4,10 @@ import Footer from '~/components/Footer.vue'
 import { ElEmpty } from 'element-plus'
 import type { Article } from '~/types/article'
 import ClientOnlyArticle from '~/components/ClientOnlyArticle.vue'
+import MarkdownIt from 'markdown-it'
+import { computed } from 'vue'
+
+const md = new MarkdownIt({ html: true, linkify: true, typographer: true })
 
 const route = useRoute()
 const articleId = route.params.id as string
@@ -12,6 +16,13 @@ const { data: article, pending, error } = await useAsyncData<Article>(
   `article-${articleId}`,
   () => $fetch(`/api/articles/${articleId}`)
 )
+
+// 将 Markdown 转 HTML
+const contentHtml = computed(() => {
+  if (!article.value?.content) return ''
+  return md.render(article.value.content)
+})
+
 </script>
 
 <template>
@@ -46,7 +57,7 @@ const { data: article, pending, error } = await useAsyncData<Article>(
           <span>· 浏览 {{ article.views }}</span>
         </div>
 
-        <div class="content" v-html="article.content"></div>
+        <div class="content" v-html="contentHtml"></div>
 
         <NuxtLink to="/" class="back-link">← 返回首页</NuxtLink>
       </article>
